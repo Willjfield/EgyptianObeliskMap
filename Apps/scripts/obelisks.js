@@ -103,22 +103,15 @@ function createModel(view,obid,long,lat,height,heading,scale,pitch,
     roll) {
     url = 'data/models/obelisks/'+obid+'/Ob'+obid+'.gltf';
     scale = typeof scale !== 'undefined' ? scale :1;
-
     heading = typeof heading !== 'undefined' ? heading :1;
-
     roll = typeof roll !== 'undefined' ? roll :0;
-
     pitch = typeof pitch !== 'undefined' ? pitch :0;
-
     var position = Cesium.Cartesian3.fromDegrees(long,lat,height);
-
     var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
-
     var entity = view.entities.add({
         name : url,
         position : position,
         orientation : orientation,
-
         model : {
           scale : scale,
             uri : url,          

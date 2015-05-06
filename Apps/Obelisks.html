@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>Cleopatra's Needles</title>
   <script src="../Build/Cesium/Cesium.js"></script>
+  <script type="text/javascript" src="Sandcastle/Sandcastle-header.js"></script>
   <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
   <script type="text/javascript" src = "scripts/obelisks.js"></script>
   <style>
@@ -25,8 +26,11 @@
       
       var viewer = new Cesium.Viewer('cesiumContainer', {
       infoBox : false,
-      selectionIndicator : false
+      selectionIndicator : false,
+      timeline: false,
+      
       });
+      var scene = viewer.scene;
 
       viewer.entities.removeAll();
 
@@ -40,19 +44,27 @@
       var greenMarker = Cesium.Color.fromCssColorString('rgba(0,255,0,.2)');
 
       //Commands to draw things
+      //Sandcastle.addDefaultToolbarButton('21', function() {
+      //plot the path, points and models of 21
       obPath(geoJ, 21, viewer, Cesium.Color.BLUE);
       obPoint(geoJ, 21, viewer, blueMarker);
       createModels(geoJ,21,viewer,0,295,.05);
+      //});
 
+      //plot the years on each site for 21
+      obCol(geoJ, 21, viewer);
+
+      //plot the path and models of 19
       obPath(geoJ, 19, viewer, Cesium.Color.YELLOW);
+      createModels(geoJ, 19, viewer,0,0,1);
 
+      //plot the path, points and models of 17
       obPath(geoJ, 17, viewer, Cesium.Color.GREEN);
       obPoint(geoJ, 17, viewer, greenMarker);
       createModels(geoJ,17,viewer,0,0,.5,180,0);
 
+      //plot the path of 20
       obPath(geoJ, 20, viewer, Cesium.Color.PURPLE);
-
-      obCol(geoJ, 21, viewer);
 
       viewer.zoomTo(viewer.entities);
     });

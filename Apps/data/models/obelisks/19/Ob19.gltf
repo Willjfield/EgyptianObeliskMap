@@ -1,0 +1,23 @@
+{
+    "accessors": {},
+    "animations": {},
+    "bufferViews": {
+        "bufferView_2": {
+            "buffer": "Ob19",
+            "byteLength": 0,
+            "byteOffset": 0,
+            "target": 34963
+        },
+        "bufferView_3": {
+            "buffer": "Ob19",
+            "byteLength": 0,
+            "byteOffset": 0,
+            "target": 34962
+        }
+    },
+    "buffers": {},
+    "materials": {},
+    "meshes": {},
+    "nodes": {},
+    "skins": {}
+}

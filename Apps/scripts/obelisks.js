@@ -40,7 +40,16 @@
       }
     };
 
-    function createModels(data, obid, view){
+    function createModels(data, obid, view,height,heading,scale,pitch,roll){
+      scale = typeof scale !== 'undefined' ? scale :1;
+      heading = typeof heading !== 'undefined' ? heading :0;
+      heading = Cesium.Math.toRadians(heading);
+      height = typeof height !== 'undefined' ? height :0;
+      roll = typeof roll !== 'undefined' ? roll :0;
+      roll = Cesium.Math.toRadians(roll);
+      pitch = typeof pitch !== 'undefined' ? pitch :0;
+      pitch = Cesium.Math.toRadians(pitch);
+
       for (var i in data.features){
         if (data.features[i].properties.id == obid){
           for(var j in data.features[i].geometry.coordinates){
@@ -52,7 +61,8 @@
               //console.log(data.features[i].geometry.coordinates[j][c]);
               console.log(icoords.length);
               if(icoords.length>1){
-              createModel(view, obid, icoords[0],icoords[1],0,295,.05);
+              createModel(view, obid, icoords[0],icoords[1],height,heading,scale, pitch,
+          roll);
               }
             }
           }
@@ -61,18 +71,23 @@
     };    
 
     
-    function createModel(view,obid,long,lat,height,heading, scale) {
+    function createModel(view,obid,long,lat,height,heading,scale,pitch,
+          roll) {
           //view.entities.removeAll();
           url = 'data/models/obelisks/'+obid+'/Ob'+obid+'.gltf';
           scale = typeof scale !== 'undefined' ? scale :1;
 
-          heading = typeof heading !== 'undefined' ? heading :0;
+          heading = typeof heading !== 'undefined' ? heading :1;
           heading = Cesium.Math.toRadians(heading);
+
+          roll = typeof roll !== 'undefined' ? roll :1;
+          roll = Cesium.Math.toRadians(roll);
+
+          pitch = typeof pitch !== 'undefined' ? pitch :0;
+          pitch = Cesium.Math.toRadians(pitch);
 
           var position = Cesium.Cartesian3.fromDegrees(long,lat,height);
 
-          var pitch = 0;
-          var roll = 0;
           var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, heading, pitch, roll);
 
           var entity = view.entities.add({

@@ -27,16 +27,19 @@
       infoBox : false,
       selectionIndicator : false
       });
+
       viewer.entities.removeAll();
 
       var terrainProvider = new Cesium.CesiumTerrainProvider({
         url : '//assets.agi.com/stk-terrain/world'
         });
       //viewer.terrainProvider = terrainProvider;
+
       var blueMarker = Cesium.Color.fromCssColorString('rgba(0,0,255,.2)');
 
       var greenMarker = Cesium.Color.fromCssColorString('rgba(0,255,0,.2)');
 
+      //Commands to draw things
       obPath(geoJ, 21, viewer, Cesium.Color.BLUE);
       obPoint(geoJ, 21, viewer, blueMarker);
       createModels(geoJ,21,viewer,0,295,.05);
@@ -48,6 +51,8 @@
       createModels(geoJ,17,viewer,0,0,.5,180,0);
 
       obPath(geoJ, 20, viewer, Cesium.Color.PURPLE);
+
+      console.log(timeOnLocation(geoJ,21,'Alexandria'));
 
       viewer.zoomTo(viewer.entities);
     });

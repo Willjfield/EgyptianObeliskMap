@@ -1,5 +1,4 @@
-
-    // Converts from degrees to radians.
+// Converts from degrees to radians.
 Math.radians = function(degrees) {
   return degrees * Math.PI / 180;
 };
@@ -8,6 +7,8 @@ Math.radians = function(degrees) {
 Math.degrees = function(radians) {
   return radians * 180 / Math.PI;
 };
+
+var thisYear = new Date().getFullYear();
 
 var notExactMarker = Cesium.Color.fromCssColorString('rgba(255,0,0,.2)');
 
@@ -27,7 +28,7 @@ for (var i in data.features){
     material : color
       }
     });   
-}
+  }
 };
 
 function obPoint(data, obid, view, color){
@@ -45,11 +46,11 @@ for (var i in data.features){
             semiMajorAxis : 100.0,
             height: 1.0,
             material : color
-        }
-      });
-    }
-  }    
-}
+          }
+        });
+      }
+    }    
+  }
 };
 
 function createModels(data, obid, view,height,heading,scale,pitch,roll){
@@ -66,7 +67,6 @@ function createModels(data, obid, view,height,heading,scale,pitch,roll){
     if (data.features[i].properties.id == obid){
       for(var ex=0; ex<data.features[i].properties.exact.length;ex++){  
         if(data.features[i].properties.exact[ex]==false){
-          //for(var j in data.features[i].geometry.coordinates){
           var icoords = [];
           for(var c in data.features[i].geometry.coordinates[ex]){
           icoords.push(data.features[i].geometry.coordinates[ex][c]);
@@ -83,12 +83,10 @@ function createModels(data, obid, view,height,heading,scale,pitch,roll){
             });
           }
         }
-        //}
       }
     }
       for(var j in data.features[i].geometry.coordinates){
          var icoords = [];
-         //console.log(j);
          for(var c in data.features[i].geometry.coordinates[j]){
           icoords.push(data.features[i].geometry.coordinates[j][c]);
             if(icoords.length>1){
@@ -101,21 +99,16 @@ function createModels(data, obid, view,height,heading,scale,pitch,roll){
   }
 };    
 
-
 function createModel(view,obid,long,lat,height,heading,scale,pitch,
     roll) {
-    //view.entities.removeAll();
     url = 'data/models/obelisks/'+obid+'/Ob'+obid+'.gltf';
     scale = typeof scale !== 'undefined' ? scale :1;
 
     heading = typeof heading !== 'undefined' ? heading :1;
-    heading = Cesium.Math.toRadians(heading);
 
-    roll = typeof roll !== 'undefined' ? roll :1;
-    //roll = Cesium.Math.toRadians(roll);
+    roll = typeof roll !== 'undefined' ? roll :0;
 
     pitch = typeof pitch !== 'undefined' ? pitch :0;
-    //pitch = Cesium.Math.toRadians(pitch);
 
     var position = Cesium.Cartesian3.fromDegrees(long,lat,height);
 
@@ -128,10 +121,65 @@ function createModel(view,obid,long,lat,height,heading,scale,pitch,
 
         model : {
           scale : scale,
-            uri : url,
-            
+            uri : url,          
         }
     });
     view.trackedEntity = entity;
 };
-    
+
+function yearAquired(data, obid, city){
+  for (var i in data.features){
+    if(data.features[i].properties.id==obid){
+      for(var cit in data.features[i].properties.city){
+        if(data.features[i].properties.city[cit]==city){
+            console.log(data.features[i].properties.city[cit]);
+            return data.features[i].properties.year_aquired[cit]; 
+        }
+      }
+    }
+  }
+};
+
+function timeOnLocation(data, obid, city){
+  for (var i in data.features){
+    if(data.features[i].properties.id==obid){
+      for(var cit=0;cit<data.features[i].properties.city.length;cit++){
+        if(data.features[i].properties.city[cit]==city){
+            if(cit<data.features[i].properties.year_aquired.length){
+            return (data.features[i].properties.year_aquired[cit+1]-data.features[i].properties.year_aquired[cit]);
+            }else{
+            return thisYear-data.features[i].properties.year_aquired[cit];
+            }
+        }
+      }
+    }
+  }
+};
+
+function plotTimeOnLocation(view,data,obid){
+  var cityHeight;
+
+  for (var i in data.features){
+    if(data.features[i].properties.id==obid){
+      for(var cit=0;cit<data.features[i].properties.city.length;cit++){
+        var icoords = [];
+        for(var c in data.features[i].geometry.coordinates[cit]){
+          icoords.push(data.features[i].geometry.coordinates[cit][c]);
+        }
+        cityHeight = timeOnLocation(data,obid,data.features[i].properties.city[cit]);
+        view.entities.add({
+              position : Cesium.Cartesian3.fromDegrees(-70.0, 45.0, 100000.0),
+              cylinder : {
+                length : cityHeight*1000,
+                topRadius : 15000.0,
+                bottomRadius : 15000.0,
+                outline : false,
+                outlineColor : Cesium.Color.WHITE,
+                outlineWidth : 4,
+                material : Cesium.Color.fromRandom({alpha : 1.0})
+                }
+          });
+      }
+    }
+  }
+};

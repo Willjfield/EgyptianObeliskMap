@@ -145,7 +145,7 @@ function timeOnLocation(data, obid, city){
     if(data.features[i].properties.id==obid){
       for(var cit=0;cit<data.features[i].properties.city.length;cit++){
         if(data.features[i].properties.city[cit]==city){
-            if(cit<data.features[i].properties.year_aquired.length){
+            if(cit<data.features[i].properties.year_aquired.length-1){
             return (data.features[i].properties.year_aquired[cit+1]-data.features[i].properties.year_aquired[cit]);
             }else{
             return thisYear-data.features[i].properties.year_aquired[cit];
@@ -156,19 +156,21 @@ function timeOnLocation(data, obid, city){
   }
 };
 
-function plotTimeOnLocation(view,data,obid){
-  var cityHeight;
 
-  for (var i in data.features){
-    if(data.features[i].properties.id==obid){
-      for(var cit=0;cit<data.features[i].properties.city.length;cit++){
-        var icoords = [];
-        for(var c in data.features[i].geometry.coordinates[cit]){
-          icoords.push(data.features[i].geometry.coordinates[cit][c]);
-        }
-        cityHeight = timeOnLocation(data,obid,data.features[i].properties.city[cit]);
-        view.entities.add({
-              position : Cesium.Cartesian3.fromDegrees(-70.0, 45.0, 100000.0),
+function obCol(data, obid, view){
+for (var i in data.features){
+  if (data.features[i].properties.id == obid){
+    for(var j in data.features[i].geometry.coordinates){
+      var cityName = data.features[i].properties.city[j];
+        var cityHeight = timeOnLocation(data,obid,cityName);
+        
+        if(cityHeight >0 ){
+          console.log(cityHeight);
+           var icoords = [];
+           icoords.push(data.features[i].geometry.coordinates[j][0]);
+           icoords.push(data.features[i].geometry.coordinates[j][1]);
+               view.entities.add({
+              position : Cesium.Cartesian3.fromDegrees(icoords[0], icoords[1], .5*(cityHeight*1000)),
               cylinder : {
                 length : cityHeight*1000,
                 topRadius : 15000.0,
@@ -179,7 +181,8 @@ function plotTimeOnLocation(view,data,obid){
                 material : Cesium.Color.fromRandom({alpha : 1.0})
                 }
           });
+        }
       }
-    }
+    }    
   }
 };

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Hello World!</title>
+  <script src="../Build/Cesium/Cesium.js"></script>
+  <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="text/javascript" src = "scripts/obelisks.js"></script>
+  <style>
+      @import url(../Build/Cesium/Widgets/widgets.css);
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    $.getJSON('https://gist.githubusercontent.com/Willjfield/443a3a9bf7cf3c6dcc20/raw/d8a137278df013fa49ffa6657453a2c1575edab3/map.geojson', function(geoJ) {
+      
+      var viewer = new Cesium.Viewer('cesiumContainer', {
+      infoBox : false,
+      selectionIndicator : false
+      });
+      viewer.entities.removeAll();
+
+      
+
+      var terrainProvider = new Cesium.CesiumTerrainProvider({
+        url : '//assets.agi.com/stk-terrain/world'
+        });
+      //viewer.terrainProvider = terrainProvider;
+      var redMarker = Cesium.Color.fromCssColorString('rgba(255,0,0,.1)');;
+
+      
+
+      obPath(geoJ, 21, viewer, Cesium.Color.RED);
+      obPoint(geoJ, 21, viewer, redMarker);
+      createModels(geoJ,21,viewer);
+
+      obPath(geoJ, 19, viewer, Cesium.Color.BLUE);
+
+      obPath(geoJ, 17, viewer, Cesium.Color.GREEN);
+
+      obPath(geoJ, 20, viewer, Cesium.Color.PURPLE);
+
+      viewer.zoomTo(viewer.entities);
+    });
+  </script>
+</body>
+</html>
